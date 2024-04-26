@@ -9,6 +9,13 @@ class CustomRequestHandler(BaseHTTPRequestHandler):
         self.send_header('Content-type', 'text/html')
         self.end_headers()
         self.wfile.write(message.encode('utf-8'))
+        self.verbose_output()
+
+    def verbose_output(self):
+        if not args.verbose:
+            return
+        for header, value in self.headers.items():
+            print(f'\t{header}: {value}')
 
     def do_GET(self):
         if self.path == '/':
@@ -30,6 +37,7 @@ class CustomRequestHandler(BaseHTTPRequestHandler):
         self._send_response("Received POST request with data:\n{}".format(post_data))
         if post_data and post_data != '':
             print(f'\t{post_data}')
+       
 
 def run_server(port=8000):
     server_address = ('', port)
@@ -43,6 +51,7 @@ parser = argparse.ArgumentParser(
     epilog='Author: 4wayhandshake 🤝🤝🤝🤝')
     
 parser.add_argument('port', nargs='?', default=8000, help='The port to listen on.', type=int)
+parser.add_argument('-v', '--verbose', dest='verbose', action='store_true', help='Output extra information. Use this to see all incoming request headers.')
 args = parser.parse_args()
 
 if __name__ == '__main__':

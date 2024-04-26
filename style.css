@@ -1,0 +1,49 @@
+body {
+    background-color: #a00c45;
+    color: #8cb5f7;
+    max-width: 90%; 
+    padding: 2rem;
+    font-family: "Courier New", monospace;
+    text-align: center;
+}
+h1,h2,h3,h4,h5,h6 {
+    color: #cccce0; 
+    font-family: "Tahoma", sans-serif;
+    letter-spacing: -0.1rem;
+    text-transform: uppercase;
+}
+input {
+    background-color: rgba(255,255,255,0.15);
+}
+quote    {
+    color: #bac0c6; 
+    font-style: italic; 
+    padding: 0.25rem 0.5rem;
+}
+a {
+    color: #19d7e5; 
+    text-decoration: underline;
+}
+ul {
+    list-style-type: none;
+    padding-left: 0;
+}
+li,.codebox{
+    background-color: rgba(0,0,0,0.15); 
+    border-radius: 0.25rem; 
+    padding: 0.75rem 1.5rem;
+    margin: 1rem 0; 
+}
+.codebox {
+    display: block;
+    text-align: left;
+    border-left: 4px solid #bac0c6;
+    margin: 1rem auto;
+    width: 90%;
+    max-width: 40rem;
+    overflow-x: scroll;
+}
+hr {
+    width: 90%;
+    margin: 1.5rem auto;
+}
