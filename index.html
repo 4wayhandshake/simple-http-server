@@ -27,15 +27,23 @@ options:
   -h, --help     show this help message and exit
   -v, --verbose  Output extra information. Use this to see all incoming request headers.
         </pre>
-        <h3>Features</h3>
         <ul>
             <li>
-                <a href="./">
-                    Files
-                </a>
+                <h3>Features</h3>
                 <p class="note-text">
-                    Browse files from here
+                    Browse files from here: <a href="./"> Files </a>
                 </p>
+            </li>
+            <li>
+                <h3>cURL Examples</h3>
+                <p class="codebox-label"> Send data in x-www-urlencoded format:</p>
+                <pre class="codebox">
+curl -d 'field=value&field2=value2' http://127.0.0.1:8080
+                </pre>
+                <p class="codebox-label"> Upload a file:</p>
+                <pre class="codebox">
+curl -X POST -F "file=@./beaver.jpg" http://127.0.0.1:8080
+                </pre>
             </li>
         </ul>
     </main>

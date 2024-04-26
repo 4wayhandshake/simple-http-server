@@ -11,6 +11,7 @@ h1,h2,h3,h4,h5,h6 {
     font-family: "Tahoma", sans-serif;
     letter-spacing: -0.1rem;
     text-transform: uppercase;
+    margin: 0 0 0.5rem 0;
 }
 input {
     background-color: rgba(255,255,255,0.15);
@@ -38,10 +39,17 @@ li,.codebox{
     display: block;
     text-align: left;
     border-left: 4px solid #bac0c6;
-    margin: 1rem auto;
+    margin: 0.25rem auto;
     width: 90%;
     max-width: 40rem;
     overflow-x: scroll;
+}
+.codebox-label {
+    text-align: left;
+    width: 90%;
+    max-width: 40rem;
+    padding: 0.5rem 0rem 0.25rem 0rem;
+    margin: 0.25rem auto;
 }
 hr {
     width: 90%;
