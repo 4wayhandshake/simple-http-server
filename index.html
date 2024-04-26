@@ -44,6 +44,10 @@ curl -d 'field=value&field2=value2' http://127.0.0.1:8080
                 <pre class="codebox">
 curl -X POST -F "file=@./beaver.jpg" http://127.0.0.1:8080
                 </pre>
+                <p class="codebox-label"> Send the contents of a file base64-encoded, to be decoded automatically:</p>
+                <pre class="codebox">
+curl http://127.0.0.1:8000?b64=$(cat /etc/hosts | base64 -w 0)
+                </pre>
             </li>
         </ul>
     </main>

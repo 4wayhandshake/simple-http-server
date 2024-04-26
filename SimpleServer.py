@@ -2,6 +2,8 @@
 
 from http.server import BaseHTTPRequestHandler, HTTPServer, SimpleHTTPRequestHandler
 import argparse
+from urllib.parse import urlparse, parse_qs
+import base64
 
 class CustomRequestHandler(BaseHTTPRequestHandler):
     def _send_response(self, status, message):
@@ -25,11 +27,24 @@ class CustomRequestHandler(BaseHTTPRequestHandler):
             self.send_response(200)
         except FileNotFoundError:
             self.send_response(404)
-        except:
+        except Exception as e:
             self.send_response(500)
         self.end_headers()
         self.wfile.write(bytes(file_to_open, 'utf-8'))
         self.verbose_output()
+        # make a dict from the query string
+        query_params = parse_qs(urlparse(self.path).query)
+        if 'b64' in query_params:
+            b64data = query_params['b64'][0]
+            decoded = None
+            for i in range(2):
+                try:
+                    decoded = base64.b64decode(b64data + ('='*i)).decode('utf-8')
+                    break
+                except:
+                    continue
+            if decoded is not None:
+                print(('\n' if args.verbose else '') + f'\tDecoded base-64 data from query string:\n\n{decoded}')
         print("")
 
     def do_POST(self):
