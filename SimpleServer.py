@@ -66,15 +66,15 @@ class CustomRequestHandler(BaseHTTPRequestHandler):
                     # Write file content to a file
                     with open(filename, 'wb') as f:
                         f.write(file_content)
-                self._send_response(200, b'File uploaded successfully.')
+                self._send_response(200, b'File uploaded successfully.\r\n')
                 self.verbose_output()
                 print(('\n' if args.verbose else '') + f'\tFile uploaded: {filename}')
             except Exception as e:
-                self._send_response(500, b'Server error occurred while uploading file.')
+                self._send_response(500, b'Server error occurred while uploading file.\r\n')
                 self.verbose_output()
                 print(f'\tFile failed to upload.')                    
         else:
-            self._send_response(200, b'POST data received.')
+            self._send_response(200, b'POST data received.\r\n')
             self.verbose_output()
             if post_data and post_data != '':
                 print(('\n' if args.verbose else '') + f'\t{post_data.decode("utf-8")}')
