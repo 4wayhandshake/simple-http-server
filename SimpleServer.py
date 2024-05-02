@@ -23,14 +23,17 @@ class CustomRequestHandler(BaseHTTPRequestHandler):
             self.path = '/index.html'
         file_to_open = ''
         try:
-            file_to_open = open(self.path[1:]).read()
+            file_to_open = open(self.path[1:], 'rb').read()
             self.send_response(200)
         except FileNotFoundError:
             self.send_response(404)
         except Exception as e:
             self.send_response(500)
+            print(f'An exception occurred while processing a GET request:\n{e}')
         self.end_headers()
-        self.wfile.write(bytes(file_to_open, 'utf-8'))
+        #self.wfile.write(bytes(file_to_open, 'utf-8'))
+        self.wfile.write(bytes(file_to_open))
+        self.verbose_output()
         self.verbose_output()
         # make a dict from the query string
         query_params = parse_qs(urlparse(self.path).query)
