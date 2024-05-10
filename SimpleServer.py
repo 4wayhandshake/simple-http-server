@@ -4,6 +4,7 @@ from http.server import BaseHTTPRequestHandler, HTTPServer, SimpleHTTPRequestHan
 import argparse
 from urllib.parse import urlparse, parse_qs
 import base64
+import os
 
 class CustomRequestHandler(BaseHTTPRequestHandler):
     def _send_response(self, status, message):
@@ -19,11 +20,16 @@ class CustomRequestHandler(BaseHTTPRequestHandler):
             print(f'\t{header}: {value}')
 
     def do_GET(self):
-        if self.path == '/':
+        if self.path == '/' or self.path == '':
             self.path = '/index.html'
         file_to_open = ''
+        resource = self.path[1:] 
+        qstring_start = resource.find('?')
+        if qstring_start != -1:
+            resource = resource[:qstring_start] 
+        filepath = os.path.join(os.getcwd(), self.path[1:])
         try:
-            file_to_open = open(self.path[1:], 'rb').read()
+            file_to_open = open(filepath, 'rb').read()
             self.send_response(200)
         except FileNotFoundError:
             self.send_response(404)
@@ -31,8 +37,12 @@ class CustomRequestHandler(BaseHTTPRequestHandler):
             self.send_response(500)
             print(f'An exception occurred while processing a GET request:\n{e}')
         self.end_headers()
-        #self.wfile.write(bytes(file_to_open, 'utf-8'))
-        self.wfile.write(bytes(file_to_open))
+        try:
+            self.wfile.write(bytes(file_to_open))
+        except TypeError:
+            self.wfile.write(bytes(file_to_open, 'utf-8'))
+        except Exception as e:
+            self._send_response(500, b'Failed to parse requested resource.\r\n')
         self.verbose_output()
         self.verbose_output()
         # make a dict from the query string
