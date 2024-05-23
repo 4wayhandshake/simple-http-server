@@ -6,6 +6,47 @@ from urllib.parse import urlparse, parse_qs
 import base64
 import os
 
+
+def extract_b64_data(querystring):
+    parsed_query = parse_qs(querystring)
+    if 'b64' in parsed_query:
+        b64_value = parsed_query['b64'][0]
+        # Find the first equals sign in the remaining part after 'b64='
+        second_equals_pos = b64_value.find('=')
+        if second_equals_pos != -1:
+            # Extract the desired part between the second equals sign and the end
+            extracted_data = b64_value[second_equals_pos + 1:]
+            return extracted_data
+        else:
+            return b64_value
+    return None
+
+
+def try_b64_decode(s):
+    decoded = None
+    for i in range(3):  # try with no padding, one padding character, or two padding characters
+        try:
+            decoded = base64.b64decode(s + '=' * i).decode('utf-8')
+            break
+        except Exception:
+            continue
+    return decoded
+
+
+def decode_base64(b64_data):
+    # If there are no periods in the data (ex. a jwt), just decode it
+    if '.' not in b64_data:
+        return try_b64_decode(b64_data)
+    # Otherwise, split on the periods and decode the chunks
+    parts = b64_data.split('.')
+    decoded_parts = []
+    for part in parts:
+        decoded_part = try_b64_decode(part)
+        if decoded_part is not None:
+            decoded_parts.append(decoded_part)
+    return decoded_parts
+
+
 class CustomRequestHandler(BaseHTTPRequestHandler):
     def _send_response(self, status, message):
         self.send_response(status)
@@ -20,14 +61,14 @@ class CustomRequestHandler(BaseHTTPRequestHandler):
             print(f'\t{header}: {value}')
 
     def do_GET(self):
-        if self.path == '/' or self.path == '':
-            self.path = '/index.html'
-        file_to_open = ''
-        resource = self.path[1:] 
-        qstring_start = resource.find('?')
+        qstring_start = self.path.find('?')
         if qstring_start != -1:
-            resource = resource[:qstring_start] 
-        filepath = os.path.join(os.getcwd(), self.path[1:])
+            resource = self.path[:qstring_start]
+        else:
+            resource = self.path
+        if resource == '' or resource == '/':
+            resource = '/index.html'
+        filepath = os.path.join(os.getcwd(), resource[1:])
         try:
             file_to_open = open(filepath, 'rb').read()
             self.send_response(200)
@@ -44,19 +85,10 @@ class CustomRequestHandler(BaseHTTPRequestHandler):
         except Exception as e:
             self._send_response(500, b'Failed to parse requested resource.\r\n')
         self.verbose_output()
-        self.verbose_output()
-        # make a dict from the query string
-        query_params = parse_qs(urlparse(self.path).query)
-        if 'b64' in query_params:
-            b64data = query_params['b64'][0]
-            decoded = None
-            for i in range(2):
-                try:
-                    decoded = base64.b64decode(b64data + ('='*i)).decode('utf-8')
-                    break
-                except:
-                    continue
-            if decoded is not None:
+        b64_data = extract_b64_data(urlparse(self.path).query)
+        if b64_data is not None:
+            decoded = decode_base64(b64_data)
+            if decoded is not None and decoded != []:
                 print(('\n' if args.verbose else '') + f'\tDecoded base-64 data from query string:\n\n{decoded}')
         print("")
 
