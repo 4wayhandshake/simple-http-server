@@ -12,13 +12,14 @@ def extract_b64_data(querystring):
     if 'b64' in parsed_query:
         b64_value = parsed_query['b64'][0]
         # Find the first equals sign in the remaining part after 'b64='
-        second_equals_pos = b64_value.find('=')
-        if second_equals_pos != -1:
+        #second_equals_pos = b64_value.find('=')
+        #if second_equals_pos != -1:
             # Extract the desired part between the second equals sign and the end
-            extracted_data = b64_value[second_equals_pos + 1:]
-            return extracted_data
-        else:
-            return b64_value
+            #extracted_data = b64_value[second_equals_pos + 1:]
+            #return extracted_data
+        #else:
+        #    return b64_value
+        return b64_value
     return None
 
 
